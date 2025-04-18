@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Solar System Resume</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            body{
+                background: radial-gradient(ellipse at bottom, #2f0251 0%, #35024c 100%);
+                margin: 0;
+                padding: 0;
+                perspective: 1000px;
+            }
+
+            .stars {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: 0;
+            }
+
+            .star {
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background: white;
+                border-radius: 50%;
+                opacity: 0.8;
+                animation: twinkle 2s infinite ease-in-out;
+            }
+
+            @keyframes twinkle {
+                0%, 100% {
+                    opacity: 0.8;
+                }
+                50% {
+                    opacity: 0.2;
+                }
+            }
+
+            .sun {
+                width: 250px;
+                height: 250px;
+                background: radial-gradient(circle, #f3d303 0%, #ff6f00 100%);
+                border-radius: 50%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotateY(0deg) rotateX(0deg);
+                animation: spin 20s linear infinite;
+                box-shadow: 0 0 50px #cb7504;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: black;
+                font-weight: bold;
+                font-size: 18px;
+                cursor: pointer;
+            }
+
+            .planet {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform-style: preserve-3d;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 12px;
+                cursor: pointer;
+            }
+
+            .planet1 {
+                background: radial-gradient(circle, #00ccff 0%, #016384 100%);
+                box-shadow: 0 0 20px #00aaffbd;
+                transform-origin: 250px;
+                animation: orbit1 13s linear infinite;
+            }
+
+            .planet2 {
+                background: radial-gradient(circle, #c51c8d 0%, #780150 100%);
+                box-shadow: 0 0 20px #d0389dbe;
+                transform-origin: 320px;
+                animation: orbit2 15s linear infinite;
+            }
+
+            .planet3 {
+                background: radial-gradient(circle, #eccc4e 0%, #ff9900 100%);
+                box-shadow: 0 0 20px #ffcc00cf;
+                transform-origin: 390px;
+                animation: orbit3 17s linear infinite;
+            }
+
+            .planet4 {
+                background: radial-gradient(circle, #ff6600 0%, #ff3300 100%);
+                box-shadow: 0 0 20px #ff6600a7;
+                transform-origin: 460px;
+                animation: orbit4 19s linear infinite;
+            }
+
+            .planet5 {
+                background: radial-gradient(circle, #00ff00 0%, #026b02 100%);
+                box-shadow: 0 0 20px #1fd41f;
+                transform-origin: 530px;
+                animation: orbit5 21s linear infinite;
+            }
+
+            .planet6 {
+                background: radial-gradient(circle, #820eb8 0%, #650591 100%);
+                box-shadow: 0 0 20px #b22bf1a9;
+                transform-origin: 600px;
+                animation: orbit6 23s linear infinite;
+            }
+
+            /* Keyframes */
+            @keyframes orbit1 {
+                0% { transform: rotateY(0deg) translateX(250px) rotateY(0deg); }
+                100% { transform: rotateY(360deg) translateX(250px) rotateY(-360deg); }
+            }
+
+            @keyframes orbit2 {
+                0% { transform: rotateY(0deg) translateX(320px) rotateY(0deg); }
+                100% { transform: rotateY(360deg) translateX(320px) rotateY(-360deg); }
+            }
+
+            @keyframes orbit3 {
+                0% { transform: rotateY(0deg) translateX(390px) rotateY(0deg); }
+                100% { transform: rotateY(360deg) translateX(390px) rotateY(-360deg); }
+            }
+
+            @keyframes orbit4 {
+                0% { transform: rotateY(0deg) translateX(460px) rotateY(0deg); }
+                100% { transform: rotateY(360deg) translateX(460px) rotateY(-360deg); }
+            }
+
+            @keyframes orbit5 {
+                0% { transform: rotateY(0deg) translateX(530px) rotateY(0deg); }
+                100% { transform: rotateY(360deg) translateX(530px) rotateY(-360deg); }
+            }
+
+            @keyframes orbit6 {
+                0% { transform: rotateY(0deg) translateX(600px) rotateY(0deg); }
+                100% { transform: rotateY(360deg) translateX(600px) rotateY(-360deg); }
+            }
+
+            .container {
+                position: relative;
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.4s ease;
+            }
+
+            .container.shift-left {
+                justify-content: flex-start; /* Move the solar system to the left */
+                padding-left: 5vw;
+            }
+
+            .solar-system {
+                width: 100vw;  /* Full width initially */
+                height: 100vh;
+                position: relative;
+                transform-style: preserve-3d;
+                transition: transform 0.4s ease;
+                padding: 0 100px;
+            }
+
+            .info-box {
+                position: absolute;
+                right: 5vw;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                padding: 20px 30px;
+                border-radius: 12px;
+                color: white;
+                font-size: 14px;
+                width: 400px;  /* Updated width */
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.4s ease;
+                box-shadow: 0 0 15px rgba(0, 170, 255, 0.6);
+            }
+
+            .info-box.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            /* Adjust the solar-system layout when the info box is active */
+            .container.shift-left .solar-system {
+                width: 60vw; /* Reduce the width of the solar system when info-box is visible */
+            }
+
+
+            .close-btn {
+                position: absolute;
+                top: 8px;
+                right: 10px;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+                transition: transform 0.2s ease;
+            }
+
+            .close-btn:hover {
+                transform: scale(1.2);
+                color: #00ccff;
+            }
+
+        </style>
+    </head>
+    <body class="overflow-hidden">
+        <div class="stars" id="stars"></div>
+        <div class="container">
+            <div class="solar-system" id="solar-system">
+                <div class="sun" onclick="showInfo('about_me')">About me</div>
+                <div class="planet planet1 w-20 h-20 text-[10px]" data-title="Expertise" onclick="showInfo('expertise')">Expertise</div>
+                <div class="planet planet2 w-20 h-20 text-[10px]" data-title="Education" onclick="showInfo('education')">Education</div>
+                <div class="planet planet3 w-20 h-20 text-[10px]" data-title="Experience" onclick="showInfo('experience')">Experience</div>
+                <div class="planet planet4 w-20 h-20 text-[12px]" data-title="ML Project" onclick="showInfo('mlp')">ML<br>Project</div>
+                <div class="planet planet5 w-20 h-20 text-[10px]" data-title="Travel Itinerary" onclick="showInfo('titinerary')">Travel<br>Itinerary</div>
+                <div class="planet planet6 w-20 h-20 text-[10px]" data-title="Group Project" onclick="showInfo('group_project')">Group<br>Project</div>  
+            </div>
+
+            <div class="info-box" id="info-box">
+                <button onclick="closeInfo()" class="close-btn">✖</button>
+                <p id="info-text"></p>
+            </div>  
+        </div>
+        <script>
+            function generateStars(count) {
+                const container = document.getElementById('stars');
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.animationDuration = `${1 + Math.random() * 2}s`;
+                    star.style.width = star.style.height = `${Math.random() * 2 + 1}px`;
+                    container.appendChild(star);
+                }
+            }
+
+            generateStars(150);
+            
+            function showInfo(section){
+                const box = document.getElementById('info-box');
+                const text = document.getElementById('info-text');
+                const container = document.querySelector('.container');
+
+                if (section === 'mlp') {
+                    text.innerHTML = `
+                        <div style="line-height: 1.6; color: white;">
+                            <h2 class="text-xl font-bold text-blue-300 mb-2">Machine Learning Project</h2>
+                            <h3 class="text-md font-semibold text-purple-300 mb-2">Sentiment Analysis of Amazon Book Reviews</h3>
+
+                            <p><strong>Technology:</strong> Python, Scikit-learn, TF-IDF, SVM, Logistic Regression, JSON</p>
+
+                            <p class="mt-4">
+                            Developed a sentiment analysis pipeline to classify Amazon book reviews as positive or negative.
+                            </p>
+
+                            <h4 class="mt-4 font-semibold text-purple-300">Key Features:</h4>
+                            <ul style="list-style-type: disc; margin-left: 1.5rem; padding-left: 1rem;">
+                            <li>Parsed a JSON dataset of user reviews.</li>
+                            <li>Implemented custom data classes for preprocessing and sentiment labeling.</li>
+                            <li>Balanced the dataset for model fairness.</li>
+                            <li>Transformed text data using TF-IDF vectorization.</li>
+                            <li>Trained and evaluated SVM and Logistic Regression models.</li>
+                            </ul>
+
+                            <p class="mt-4">
+                            Achieved accurate sentiment classification with strong generalization to unseen data.
+                            </p>
+                        </div>
+                        `;
+                }
+
+                else if (section === 'about_me') {
+                    text.innerHTML = `
+                    <div class="text-white space-y-4" style="line-height: 1.6;">
+                        <p>
+                        I am a dedicated and driven <strong>Computer Science and Mathematics graduate</strong> with a solid foundation in 
+                        <em>mathematical analysis</em> and hands-on experience with programming languages such as 
+                        <code class="bg-gray-800 text-green-300 px-1 rounded">Python</code>, 
+                        <code class="bg-gray-800 text-green-300 px-1 rounded">Java</code>, and 
+                        <code class="bg-gray-800 text-green-300 px-1 rounded">C/C++</code>.
+                        </p>
+
+                        <p>
+                        Passionate about solving complex problems, I’m eager to begin my professional journey in the tech industry—applying my skills, 
+                        collaborating with talented teams, and continuously learning to drive innovation.
+                        </p>
+
+                        <div class="text-sm space-y-1">
+                        <p><strong>Email:</strong> <span class="text-blue-200">mateisalajan5@gmail.com</span></p>
+                        <p>
+                            <strong>GitHub:</strong> 
+                            <a href="https://github.com/mateisalajan" target="_blank" class="underline text-blue-300 hover:text-blue-400 transition">
+                            github.com/mateisalajan
+                            </a>
+                        </p>
+                        </div>
+                    </div>
+                    `;
+                }
+
+                else if (section === 'expertise') {
+                    text.innerHTML = `
+                        <div style="line-height: 1.6;">
+                        <h2 class="text-xl font-bold mb-2 text-blue-300">Expertise</h2>
+
+                        <div class="mb-4">
+                            <h3 class="font-semibold text-lg text-purple-300">Technical Skills</h3>
+                            <ul class="list-disc ml-6 text-white">
+                            <li>Python, C/C++, Java, Assembly</li>
+                            <li>SQL, Bash</li>
+                            <li>HTML/CSS, JavaScript</li>
+                            <li>Matlab</li>
+                            <li>Microsoft Word, Excel, PowerPoint</li>
+                            <li>Google Docs</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="font-semibold text-lg text-purple-300">Soft Skills</h3>
+                            <ul class="list-disc ml-6 text-white">
+                            <li>Problem Solving</li>
+                            <li>Communication</li>
+                            <li>Teamwork</li>
+                            <li>Work Ethic</li>
+                            <li>Fast Learning</li>
+                            <li>Creativity</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-lg text-purple-300">Hobbies</h3>
+                            <ul class="list-disc ml-6 text-white">
+                            <li>Analyzing books, music (albums), and movies</li>
+                            <li>Playing sports (basketball, ping pong, volleyball)</li>
+                            </ul>
+                        </div>
+                        </div>
+                    `;
+                }
+                
+                else if (section === 'experience') {
+                    text.innerHTML = `
+                        <div class="text-white space-y-4" style="line-height: 1.6;">
+                        <div>
+                            <h2 class="text-xl font-bold text-blue-300">Experience</h2>
+                            <h3 class="text-lg font-semibold text-purple-300 mt-2">Computer Science Teacher</h3>
+                            <p class="text-sm text-gray-400">Liceul Teoretic Onisifor Ghibu, Cluj-Napoca, Romania</p>
+                            <p class="text-sm text-gray-400">September 2023 – December 2023</p>
+                        </div>
+
+                        <ul class="list-disc ml-6 text-white">
+                            <li>Taught computer science courses to students in 10th, 11th, and 12th grades.</li>
+                            <li>Implemented curriculum for introductory computer science courses.</li>
+                            <li>Utilized various teaching methods to support different learning styles and foster a positive environment.</li>
+                            <li>Provided personalized mentoring for students pursuing CS careers or higher education.</li>
+                        </ul>
+                        </div>
+                    `;
+                }
+
+                else if (section === 'education') {
+                    text.innerHTML = `
+                        <div class="text-white space-y-4" style="line-height: 1.6;">
+                        <div>
+                            <h2 class="text-xl font-bold text-blue-300">Education</h2>
+                            <p class="text-lg font-semibold text-purple-300 mt-2">Bachelor’s Degree in Differential Equations</p>
+                            <p class="text-sm text-gray-400">2021 – 2024</p>
+                            <p class="text-sm text-gray-400">Faculty of Mathematics and Computer Science, Babeș-Bolyai University of Cluj-Napoca</p>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-purple-300 mt-4">Relevant Courses:</h3>
+                            <ul class="list-disc ml-6">
+                            <li>Object-Oriented Programming in Python, C++, and Java</li>
+                            <li>Data Structures and Algorithms in C++</li>
+                            <li>Operating Systems in C and Bash</li>
+                            <li>Artificial Intelligence in Python</li>
+                            <li>Differential Equations</li>
+                            <li>Mathematical Analysis</li>
+                            </ul>
+                        </div>
+                        </div>
+                    `;
+                }
+
+                else if (section === 'titinerary') {
+                    text.innerHTML = `
+                        <div class="text-white space-y-4" style="line-height: 1.6;">
+                            <div>
+                                <h2 class="text-xl font-bold text-blue-300">Travel Itinerary Generator App</h2>
+                                <p class="text-sm text-gray-400">
+                                    <strong>GitHub:</strong> 
+                                    <a href="https://github.com/mateisalajan/travel-itinerary-app/tree/main" target="_blank" class="underline text-blue-300 hover:text-blue-400 transition">
+                                        github.com/mateisalajan/travel-itinerary-app
+                                    </a>
+                                </p>
+                                <p class="mt-2"><strong>Tech:</strong> Python, Streamlit, OpenAI (Ollama), Notion API, Yagmail, Git</p>
+                            </div>
+
+                            <ul class="list-disc list-inside space-y-2 text-sm text-gray-300">
+                                <li>Developed an AI-powered app to generate travel itineraries based on user input</li>
+                                <li>Used Streamlit for interactive UI and Ollama for itinerary generation</li>
+                                <li>Integrated Notion API to auto-save trips as organized pages</li>
+                                <li>Automated email delivery of itineraries using Yagmail</li>
+                                <li>Followed Git best practices with branching and pull requests</li>
+                            </ul>
+                        </div>
+                    `;
+                }   
+
+
+                else if (section === 'group_project') {
+                    text.innerHTML = `
+                        <div class="text-white space-y-4" style="line-height: 1.6;">
+                        <div>
+                            <h2 class="text-xl font-bold text-blue-300">Backend Developer | CanMyPcRunIt</h2>
+                            <p class="text-sm text-gray-400">
+                            <strong>GitHub:</strong> 
+                            <a href="https://github.com/mateisalajan/CanMyPcRunIt" target="_blank" class="underline text-blue-300 hover:text-blue-400 transition">
+                                github.com/mateisalajan/CanMyPcRunIt
+                            </a>
+                            </p>
+                            <p class="mt-2"><strong>Technologies:</strong> Python, Flask, APIs, PostgreSQL</p>
+                        </div>
+
+                        <div>
+                            <p>Collaborated with a team to develop CanMyPcRunIt, an application that determines if a user's PC/laptop can run a game based on its components.</p>
+
+                            <p>Worked on backend development, handling data from an extensive game database, and implemented functionalities such as search, allowing users to find game compatibility information based on their hardware specs.</p>
+                        </div>
+                        </div>
+                    `;
+                }
+
+                box.classList.add('active');
+                container.classList.add('shift-left');
+            }
+
+            function closeInfo(){
+                const box = document.getElementById('info-box');
+                const container = document.querySelector('.container');
+                box.classList.remove('active');
+                container.classList.remove('shift-left');
+            }
+        </script>
+    </body>
+</html>
